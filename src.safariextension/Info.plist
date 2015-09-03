@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Richard Neomy</string>
+	<key>Builder Version</key>
+	<string>10600.8.9</string>
+	<key>CFBundleDisplayName</key>
+	<string>New Hit Songs for YouTube</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.add0n.yhits</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Database Quota</key>
+		<real>5242880</real>
+		<key>Global Page</key>
+		<string>lib/safari/background.html</string>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>toolbarbutton</string>
+				<key>Image</key>
+				<string>data/icons/safari.png</string>
+				<key>Label</key>
+				<string>New Hit Songs for YouTube</string>
+				<key>Popover</key>
+				<string>popup</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict/>
+	</dict>
+	<key>Description</key>
+	<string>New Hit Songs for YouTube finds trending (hot) songs for you from reddit.com/r/Music</string>
+	<key>DeveloperIdentifier</key>
+	<string>L62F677Y54</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Allowed Domains</key>
+			<array>
+				<string>www.reddit.com</string>
+			</array>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>Some</string>
+		</dict>
+	</dict>
+	<key>Website</key>
+	<string>http://add0n.com/youtube-hits.html</string>
+</dict>
+</plist>
