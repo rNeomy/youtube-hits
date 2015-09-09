@@ -18,41 +18,23 @@
   <div id="content" class="flex">
     <table width="100%">
       <tr>
-        <td>Category 1</td>
+        <td>Subreddits:</td>
         <td>
-          <!-- Pref 1 -->
-          <span>This is an integer pref:</span>
-          <input data-pref="options.intPref" type="number" min="10"></input>
-          <p class="note">Description of option 1</p>
-          <p class="spacer"></p>
-          <!-- Pref 2 -->
-          <label>
-            <span>This is a Boolean pref:</span>
-            <input type="checkbox" data-pref="options.bolPref">
-          </label>
-          <p class="note">Description of option 2</p>
-          <p class="spacer"></p>
-          <!-- Pref 3 -->
           <div class="box">
-            <label>This is text Pref:</label>
-            <input type="text" data-pref="options.strPref"/>
+            <label>List of subreddits to fetch songs from:</label>
+            <input type="text" data-pref="options.subreddits"/>
           </div>
-        </td>
-      </tr>
-      <tr>
-        <td>Popup</td>
-        <td>
-          <span>Popup width is (in pixels):</span> <input data-pref="popup.width" type="number" min="200"></input>
-          <p class="note">Minimum popup width is 200px.</p>
-          <p class="spacer"></p>
-          <span>Popup height is (in pixels):</span> <input data-pref="popup.height" type="number" min="200"></input>
-          <p class="note">Minimum popup height is 200px.</p>
-          <p class="spacer"></p>
+          <p class="note">Comma separated list of subreddits. Format of each subreddit must follow /r/subreddit.</p>
         </td>
       </tr>
       <tr>
         <td>Misc</td>
         <td>
+          <span>Clear fetched songs:</span> <input type="button" data-reset="ids" value="Reset">
+          <p class="spacer"></p>
+          <span>Clear trashed songs:</span> <input type="button" data-reset="trashed" value="Reset">
+          <p class="note">Trashed songs are used to prevent suggesting an already listened song.</p>
+          <p class="spacer"></p>
           <label>
             <span>Show welcome page on upgrade:</span> <input type="checkbox" data-pref="welcome.show">
           </label>

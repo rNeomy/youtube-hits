@@ -23,9 +23,12 @@ app.options.receive('get', function (pref) {
 });
 app.options.receive('info', function () {
   app.options.send('info', {
-    title: 'title',
-    inshort: 'in short ...'
+    title: 'YouTube Hits',
+    inshort: 'Find trending musics'
   });
+});
+app.options.receive('reset', function (name) {
+  youtube.clear(name);
 });
 
 /* welcome page */
@@ -51,7 +54,7 @@ var youtube = (function () {
     ids = ids.filter(function (e, i, l) {
       return l.indexOf(e) === i;
     });
-    ids = ids.slice(-200);  // maximum number of youtube ids to store
+    ids = ids.slice(-1 * config.reddit.length[name]);  // maximum number of youtube ids to store
     app.storage.write(name, JSON.stringify(ids));
     if (name === 'ids') {
       app.button.badge = ids.length || '';
@@ -75,6 +78,13 @@ var youtube = (function () {
       var i = ids.indexOf(id);
       ids.splice(i, 1);
       set('ids', ids);
+    },
+    clear: function (name) {
+      app.storage.write(name, '');
+      if (name === 'ids') {
+        app.button.badge = '';
+        app.storage.write('last-fetched', '');
+      }
     }
   };
 })();
@@ -121,48 +131,72 @@ app.on('open', function () {
   }
 });
 
-var tID;
-app.on('fetch', function (silent) {
-  console.error('fetching new songs');
-  app.timer.clearTimeout(tID);
-  if (!silent) {
-    app.notify('YouTube Hits', 'Fetching new hit songs\nPlease wait ...');
-  }
+function wget (url) {
+  var d = app.Promise.defer();
   var req = new app.XMLHttpRequest();
   req.onload = function () {
-    var ids = [
-      req.responseText.match(/youtu\.be\/([^\"\'\&]+)/gm).map(function (p) {
-        return /youtu\.be\/([^\"\'\&]+)/.exec(p)[1];
-      }),
-      req.responseText.match(/youtube\..{2,3}\/watch\?v\=([^\"\'\&]+)/gm).map(function (p) {
-        return /youtube\..{2,3}\/watch\?v\=([^\"\'\&]+)/.exec(p)[1];
-      })
-    ];
-    ids = [].concat.apply([], ids);
-    console.error('number of new fetch', ids.length);
-    if (ids.length) {
-      youtube.append(ids);
-      if (!silent) {
-        app.emit('open');
-      }
+    if (req.responseText) {
+      d.resolve(req.responseText);
     }
+    else {
+      d.reject(new Error('Empty Response'));
+    }
+  };
+  req.onerror = function (e) {
+    d.reject(e);
+  };
+  req.open('GET', url);
+  req.send();
+  return d.promise;
+}
+
+var tID;
+function process (index, silent, sub, content) {
+  var ids = [
+    (content.match(/youtu\.be\/([^\"\'\&]+)/gm) || []).map(function (p) {
+      return /youtu\.be\/([^\"\'\&]+)/.exec(p)[1];
+    }),
+    (content.match(/youtube\..{2,3}\/watch\?v\=([^\"\'\&]+)/gm) || []).map(function (p) {
+      return /youtube\..{2,3}\/watch\?v\=([^\"\'\&]+)/.exec(p)[1];
+    })
+  ];
+  ids = [].concat.apply([], ids);
+  if (ids.length) {
+    youtube.append(ids);
+    if (!silent && index === 0) {
+      app.emit('open');
+    }
+  }
+  if (index === 0) {
     tID = app.timer.setTimeout(function () {
       app.emit('fetch', true);
     }, 30 * 60 * 1000);
     app.storage.write('last-fetched', (new Date()).toString());
-  };
-  req.onerror = function (e) {
-    if (!silent) {
-      app.notify('YouTube Hits', 'Cannot fetch new songs from reddit.com/r/Music\n\n' + e);
-    }
-    console.error('err', e);
-    tID = app.timer.setTimeout(function () {
-      app.emit('fetch', true);
-    }, 1 * 60 * 1000);
-  };
-  req.open('GET', 'https://www.reddit.com/r/Music/.rss');
-  req.send();
-});
+  }
+}
+function fetch (silent) {
+  app.timer.clearTimeout(tID);
+  if (!silent) {
+    app.notify('YouTube Hits', 'Fetching new hit songs\nPlease wait ...');
+  }
+  config.reddit.subscribed.forEach(function (sub, i) {
+    wget('https://www.reddit.com' + sub + '/.rss').then(
+      process.bind(this, i, silent, sub),
+      function (e) {
+        if (!silent) {
+          app.notify('YouTube Hits', 'Cannot fetch new songs from ' + sub + '\n\n' + e);
+        }
+        if (i === 0) {
+          tID = app.timer.setTimeout(function () {
+            app.emit('fetch', true);
+          }, 1 * 60 * 1000);
+        }
+      }
+    );
+  });
+}
+app.on('fetch', fetch);
+
 /* init */
 app.emit('fetch', true);
 app.button.badge = youtube.get().length || '';

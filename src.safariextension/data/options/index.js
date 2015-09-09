@@ -53,3 +53,9 @@ background.receive('info', function (obj) {
   document.title = 'Options - ' + obj.title;
 });
 background.send('info');
+
+[].forEach.call(document.querySelectorAll('[data-reset]'), function (elem) {
+  elem.addEventListener('click', function () {
+    background.send('reset', this.dataset.reset);
+  });
+});

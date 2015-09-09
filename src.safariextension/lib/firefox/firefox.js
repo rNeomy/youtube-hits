@@ -15,8 +15,7 @@ var self          = require('sdk/self'),
     unload        = require('sdk/system/unload'),
     xhr           = require('sdk/net/xhr'),
     {on, off, once, emit} = require('sdk/event/core'),
-    {Cu}          = require('chrome'),
-    config        = require('../config');
+    {Cu}          = require('chrome');
 
 Cu.import('resource://gre/modules/Promise.jsm');
 
@@ -62,9 +61,7 @@ exports.button = (function () {
       button.label = val;
     },
     set badge (val) {
-      if (config.ui.badge) {
-        button.badge = val;
-      }
+      button.badge = val;
     }
   };
 })();

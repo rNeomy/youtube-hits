@@ -3,7 +3,6 @@
 var isFirefox = typeof require !== 'undefined', config;
 if (isFirefox) {
   var app = require('./firefox/firefox');
-  var os = require('sdk/system').platform;
   config = exports;
 }
 else {
@@ -11,27 +10,19 @@ else {
 }
 
 config.options = {
-  get intPref () {
-    return +app.storage.read('intPref') || 10;  // default value is 10
+  get subreddits () {
+    return app.storage.read('subreddits') || '/r/Music';
   },
-  set intPref (val) {
-    val = +val;
-    if (val < 5) {
-      val = 5;
-    }
-    app.storage.write('intPref', val);
-  },
-  get bolPref () {
-    return app.storage.read('bolPref') === 'false' ? false : true; // default is true
-  },
-  set bolPref (val) {
-    app.storage.write('bolPref', val);
-  },
-  get strPref () {
-    return app.storage.read('strPref') || 'default string';
-  },
-  set strPref (val) {
-    app.storage.write('strPref', val);
+  set subreddits (val) {
+    val = val.split(/\s*\,\s*/)
+    .map(function (sub) {
+      return sub.trim().replace('https://www.reddit.com', '').replace('/.rss', '').replace(/\/$/, '');
+    })
+    .filter(function (o, i, l) {
+      return l.indexOf(o) === i && o.indexOf('/r/') === 0;
+    })
+    .join(', ');
+    app.storage.write('subreddits', val);
   }
 };
 
@@ -78,6 +69,15 @@ config.welcome = {
     app.storage.write('show', val);
   }
 };
+
+config.reddit = {
+  subscribed: config.options.subreddits.split(', '),
+  length: {
+    trashed: 400,
+    ids: 200
+  }
+};
+
 // Complex get and set
 config.get = function (name) {
   return name.split('.').reduce(function (p, c) {

@@ -9,9 +9,7 @@
     "storage",
     "tabs",
     "notifications",
-    "background",
-    "webRequest",
-    "<all_urls>"
+    "https://www.reddit.com/r/*"
   ],
   "web_accessible_resources": [],
   "browser_action": {
