@@ -71,7 +71,9 @@ config.welcome = {
 };
 
 config.reddit = {
-  subscribed: config.options.subreddits.split(', '),
+  get subscribed () {
+    return config.options.subreddits.split(', ');
+  },
   length: {
     trashed: 400,
     ids: 200

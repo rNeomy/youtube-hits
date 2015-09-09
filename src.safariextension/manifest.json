@@ -3,7 +3,7 @@
   "short_name": "iyhits",
   "description": "YouTube Hits finds trending (hot) songs for you from reddit.com/r/Music",
   "author": "Richard Neomy",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "manifest_version": 2,
   "permissions": [
     "storage",
